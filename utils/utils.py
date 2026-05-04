@@ -2,6 +2,7 @@ import re
 import unicodedata
 import aiohttp
 from typing import Callable, Awaitable, TypeVar
+import os
 
 T = TypeVar("T")
 
@@ -23,11 +24,15 @@ class Utils:
 
         return text
     
-    async def download_image(self, url: str, filename: str) -> None:
+    async def download_image(self, url: str, filename: str, destiny: str) -> None:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 if resp.status == 200:
-                    with open(f"data/images/{filename}.webp", "wb") as f:
+                    
+                    os.makedirs(f"data/images/{destiny}", exist_ok=True)
+                    
+                    
+                    with open(f"data/images/{destiny}/{filename}.webp", "wb") as f:
                         f.write(await resp.read())
                     print("Imagen guardada:", filename)
                 else:

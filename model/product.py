@@ -60,4 +60,33 @@ class Product:
                 except Exception as e:
                     self.append_especific_error("price", f"Error al convertir precio: {e}")
     
+    def set_category(self, category: value_error):
+        error, value = category
+        if error:
+            self.append_especific_error("category", error)
+        else:
+            self.category = value or ""
+    
+    def set_sub_category(self, sub_category: value_error):
+        error, value = sub_category
+        if error:
+            self.append_especific_error("sub_category", error)
+        else:
+            self.sub_category = value or ""
+    
+    def set_seller(self, seller: value_error):
+        error, value = seller
+        if error:
+            self.append_especific_error("seller", error)
+        else:
+            self.buy_by = value or ""
+            
+    def set_spects_raw(self, spects: list[str]):
+        self.spects = spects    
+    
+    def set_catarecteristics(self, caracteristics: list[str]):
+        self.caracteristics = caracteristics
+        
+    def set_images(self, images: list[str]):
+        self.images = images
     
