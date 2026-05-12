@@ -61,3 +61,10 @@ class Utils:
         except Exception as e:
             print(f"Error en función {func.__name__}: {e}")
             return str(e), None
+    
+    def generate_ramdom_string(self, length: int = 8) -> str:
+        import random
+        import string
+
+        letters = string.ascii_letters + string.digits
+        return ''.join(random.choice(letters) for i in range(length))

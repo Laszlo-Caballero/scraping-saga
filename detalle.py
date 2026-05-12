@@ -127,7 +127,7 @@ async def detalle():
                     if img_url:
                         new_img = img_url.replace("w=100,h=100", "w=1200,h=1200")
                         
-                        destiny = f"{slug_name}"
+                        destiny = f"{slug_name}_{utils.generate_ramdom_string(6)}"
                         name = f"{slug_name}_{len(images)+1}"
                         await utils.download_image(new_img, name, destiny)
                         images.append(f"data/images/{destiny}/{name}.webp")
