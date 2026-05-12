@@ -93,7 +93,7 @@ async def scraping(page_link: str):
                 finally:
                     await product_repository.insert_product(product_append)
         
-            if actual_page == 1:
+            if actual_page == total_pages:
                 is_last_page = True
             else: 
                 actual_page += 1
