@@ -47,7 +47,7 @@ async def scraping(page_link: str):
             
             link = ""
             if actual_page > 1:
-                link = f"{page_link}&page={actual_page}"
+                link = f"{page_link}?page={actual_page}"
                 await page.goto(link)
             
             container = page.locator(f"#{SagaKeys.PRODUCTS_ID.value}")

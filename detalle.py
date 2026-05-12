@@ -112,7 +112,7 @@ async def detalle():
                 
                 galery_images = await galery_container.locator("img").all()
                 
-                two_first_images = galery_images[:2]
+                two_first_images = galery_images[:3]
                 
                 images = []
                 slug_name = utils.to_slug(product.name)
