@@ -8,6 +8,8 @@ import json
 
 path_json = "data/products.json"
 
+saga_not_found = "https://www.falabella.com.pe/falabella-pe/notFound"
+
 utils = Utils()
 
 
@@ -32,8 +34,8 @@ async def detalle():
                 
                 await page.goto(product.url)
                 
-                if page.url != product.url:
-                    print(f"URL redirigida para el producto {product.name}: {page.url}")
+                if page.url == saga_not_found:
+                    print(f"Producto no encontrado: {product.name}")
                     continue
                 
                 await page.wait_for_selector(f"#{DetailsKeys.DETAIL_ID.value}")
