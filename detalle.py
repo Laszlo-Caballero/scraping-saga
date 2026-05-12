@@ -26,13 +26,19 @@ async def detalle():
         aux = 0
 
         for product in products_data:
-            aux += 1
-            print(f"Procesando producto {aux}/{len(products_data)}: {product.name}")
-            
-            await page.goto(product.url)
-            await page.wait_for_selector(f"#{DetailsKeys.DETAIL_ID.value}")
-            
             try:
+                aux += 1
+                print(f"Procesando producto {aux}/{len(products_data)}: {product.name}")
+                
+                await page.goto(product.url)
+                
+                if page.url != product.url:
+                    print(f"URL redirigida para el producto {product.name}: {page.url}")
+                    continue
+                
+                await page.wait_for_selector(f"#{DetailsKeys.DETAIL_ID.value}")
+                
+            
                 container = page.locator(f"#{DetailsKeys.DETAIL_ID.value}")
             
                 

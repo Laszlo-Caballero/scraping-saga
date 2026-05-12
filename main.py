@@ -5,12 +5,19 @@ from enum_saga.saga_keys import SagaKeys
 from utils.utils import Utils
 from model.product import Product
 import json
+from detalle import detalle
 
-page_link = "https://www.falabella.com.pe/falabella-pe/collection/descuentos-cmr?sid=HO_X1___OUS_6940"
+# page_link = "https://www.falabella.com.pe/falabella-pe/collection/descuentos-cmr?sid=HO_X1___OUS_6940"
+links = ["https://www.falabella.com.pe/falabella-pe/category/cat760702/Telefonia", 
+         "https://www.falabella.com.pe/falabella-pe/category/cat50678/Computadoras",
+         "https://www.falabella.com.pe/falabella-pe/category/cat40488/Audio",
+         "https://www.falabella.com.pe/falabella-pe/category/cat210477/TV-Televisores"]
 
 utils = Utils()
+products: list[Product] = []
 
-async def scraping():
+
+async def scraping(page_link: str):
     os.makedirs("data/images", exist_ok=True)
     
     async with async_playwright() as p:
@@ -35,7 +42,6 @@ async def scraping():
         
         print("Total de páginas:", total_pages)
                 
-        products: list[Product] = []
 
         while not is_last_page:
             
@@ -55,7 +61,8 @@ async def scraping():
                 break
             
             
-            for product in all_products:
+            for idx, product in enumerate(all_products):
+                print(f"Procesando producto {idx + 1} de {len(all_products)}")
                 product_append = Product()
 
                 try:
@@ -80,21 +87,33 @@ async def scraping():
                     
 
                 except Exception as e:
+                    print(f"Error al procesar el producto: {str(e)}")
                     product_append.set_error(str(e))
                     continue
                 finally:
                     products.append(product_append)
         
-            if actual_page == total_pages:
+            if actual_page == 1:
                 is_last_page = True
             else: 
                 actual_page += 1
         
-        json_data = [product.to_dict() for product in products]
-        with open("data/products.json", "w", encoding="utf-8") as f:
-            json.dump(json_data, f, ensure_ascii=False, indent=4)
-        input("Presiona Enter para cerrar el navegador...")
+
+
+
+
+async def main():
+    for link in links:
+        await scraping(link)
+    
+    json_data = [product.to_dict() for product in products]
+    with open("data/products.json", "w", encoding="utf-8") as f:
+        json.dump(json_data, f, ensure_ascii=False, indent=4)
+    
+    await detalle()
+    
+    print("Proceso de scraping y detalle completado.")
 
 
 if __name__ == "__main__":
-    asyncio.run(scraping())
+    asyncio.run(main())

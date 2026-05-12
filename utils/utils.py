@@ -43,4 +43,5 @@ class Utils:
             result = await func()
             return None, result
         except Exception as e:
+            print(f"Error en función {func.__name__}: {e}")
             return str(e), None
