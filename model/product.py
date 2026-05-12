@@ -4,7 +4,7 @@ value_error = tuple[str | None, str | None]
 
 @dataclass
 class Product:
-
+    id: int = 0
     name: str = ""
     price: list[float] = field(default_factory=list)
     buy_by: str = ""

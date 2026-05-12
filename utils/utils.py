@@ -6,6 +6,22 @@ import os
 
 T = TypeVar("T")
 
+
+def singleton():
+    def decorator(cls):
+        instances = {}
+
+        def get_instance(*args, **kwargs):
+            if cls not in instances:
+                instances[cls] = cls(*args, **kwargs)
+            return instances[cls]
+
+        return get_instance
+
+    return decorator
+
+
+
 class Utils:
 
     def to_slug(self, text: str) -> str:

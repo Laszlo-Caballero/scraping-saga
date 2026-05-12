@@ -4,7 +4,7 @@ import os
 from enum_saga.saga_keys import SagaKeys
 from utils.utils import Utils
 from model.product import Product
-import json
+from repository.ProductRepository import ProductRepository
 from detalle import detalle
 
 # page_link = "https://www.falabella.com.pe/falabella-pe/collection/descuentos-cmr?sid=HO_X1___OUS_6940"
@@ -14,7 +14,7 @@ links = ["https://www.falabella.com.pe/falabella-pe/category/cat760702/Telefonia
          "https://www.falabella.com.pe/falabella-pe/category/cat210477/TV-Televisores"]
 
 utils = Utils()
-products: list[Product] = []
+product_repository = ProductRepository()
 
 
 async def scraping(page_link: str):
@@ -91,9 +91,9 @@ async def scraping(page_link: str):
                     product_append.set_error(str(e))
                     continue
                 finally:
-                    products.append(product_append)
+                    await product_repository.insert_product(product_append)
         
-            if actual_page == total_pages:
+            if actual_page == 1:
                 is_last_page = True
             else: 
                 actual_page += 1
@@ -103,13 +103,10 @@ async def scraping(page_link: str):
 
 
 async def main():
+    await product_repository.create_table()
     for link in links:
         await scraping(link)
-    
-    json_data = [product.to_dict() for product in products]
-    with open("data/products.json", "w", encoding="utf-8") as f:
-        json.dump(json_data, f, ensure_ascii=False, indent=4)
-    
+
     await detalle()
     
     print("Proceso de scraping y detalle completado.")

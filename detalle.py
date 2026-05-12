@@ -1,22 +1,19 @@
 import asyncio
 from playwright.async_api import async_playwright
-import os
 from enum_saga.saga_keys import DetailsKeys
 from utils.utils import Utils
-from model.product import Product
-import json
+from repository.ProductRepository import ProductRepository
 
 path_json = "data/products.json"
 
 saga_not_found = "https://www.falabella.com.pe/falabella-pe/notFound"
 
 utils = Utils()
+product_repository = ProductRepository()
 
 
 async def detalle():
-    with open(path_json, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        products_data = [Product(**item) for item in data]
+    products_data = await product_repository.get_products()
         
     
     print(len(products_data))
@@ -140,12 +137,10 @@ async def detalle():
             except Exception as e:
                 print(f"Error procesando el producto {product.name}: {e}")
                 product.set_error(str(e))
-                    
+            finally:
+                await product_repository.update_product(product)
                   
-        
-    with open("data/products_detailed.json", "w", encoding="utf-8") as f:
-        json_data = [product.to_dict() for product in products_data]
-        json.dump(json_data, f, ensure_ascii=False, indent=4)
+
         
 
 
