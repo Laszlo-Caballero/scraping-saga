@@ -64,14 +64,17 @@ async def scraping(page_link: str):
             for idx, product in enumerate(all_products):
                 print(f"Procesando producto {idx + 1} de {len(all_products)}")
                 product_append = Product()
-
+                
+                error, product_key = await utils.error_wrapper(lambda: product.locator("a").get_attribute("data-key"))
+                if error:
+                    print(f"Error al obtener el atributo data-key: {error}")
                 try:
                     url = await utils.error_wrapper(lambda: product.locator("a").get_attribute("href"))
                     product_append.set_url(url)
                     brand = await utils.error_wrapper(lambda: product.locator(f"b.{SagaKeys.BRAND_CLASS.value}").inner_text()) 
                     product_append.set_brand(brand)
 
-                    name = await utils.error_wrapper(lambda: product.locator(f"b.{SagaKeys.NAME_CLASS.value}").inner_text())
+                    name = await utils.error_wrapper(lambda: product.locator(f"#{SagaKeys.NAME_ID.value}{product_key}").inner_text())
                     product_append.set_name(name)
 
                     prices_container = product.locator(f"ol.{SagaKeys.PRICES_CONTAINER_CLASS.value}")
@@ -93,7 +96,7 @@ async def scraping(page_link: str):
                 finally:
                     await product_repository.insert_product(product_append)
         
-            if actual_page == total_pages:
+            if actual_page == 1:
                 is_last_page = True
             else: 
                 actual_page += 1
